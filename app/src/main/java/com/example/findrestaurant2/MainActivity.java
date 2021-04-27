@@ -58,6 +58,11 @@ public class MainActivity extends AppCompatActivity {
         double longitude = gpsTracker.getLongitude();
         address = getCurrentAddress(latitude, longitude);
         address = addressChanger(address);
+        //Test 용으로 address 값 임시로 고정
+        address = "영등포구";
+        Toast.makeText(getApplicationContext(), address, Toast.LENGTH_SHORT).show();
+
+
 
 
         //데이터를 카드 뷰에 넣어서 카드를 만드는 기능
@@ -72,8 +77,10 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), mAdapter.getText(position), Toast.LENGTH_SHORT).show();
             }
         });
-
         mRecyclerView.setAdapter(mAdapter);
+
+
+        //데이타 추가
         myDataset.add(new MyData("Spaghetti1", R.mipmap.spaghetti));
         myDataset.add(new MyData("Spaghetti2", R.mipmap.spaghetti));
         myDataset.add(new MyData("Spaghetti3", R.mipmap.spaghetti));
