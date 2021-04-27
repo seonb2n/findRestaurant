@@ -15,9 +15,11 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private ArrayList<MyData> myDataset;
+    private Button findButton;
 
     private GpsTracker gpsTracker;
 
@@ -38,12 +41,15 @@ public class MainActivity extends AppCompatActivity {
     String[] REQUIRED_PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
     String address;
 
+    String[] placeData = new String[10];
+    BackGroundTask task;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler1);
-
+        findButton = (Button) findViewById(R.id.findButton);
 
         if (!checkLocationServicesStatus()) {
             showDialogForLocationServiceSetting();
@@ -63,8 +69,6 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), address, Toast.LENGTH_SHORT).show();
 
 
-
-
         //데이터를 카드 뷰에 넣어서 카드를 만드는 기능
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
@@ -79,11 +83,36 @@ public class MainActivity extends AppCompatActivity {
         });
         mRecyclerView.setAdapter(mAdapter);
 
-
         //데이타 추가
-        myDataset.add(new MyData("Spaghetti1", R.mipmap.spaghetti));
-        myDataset.add(new MyData("Spaghetti2", R.mipmap.spaghetti));
-        myDataset.add(new MyData("Spaghetti3", R.mipmap.spaghetti));
+        myDataset.add(new MyData("스파게티 맛집", R.mipmap.spaghetti));
+        myDataset.add(new MyData("치킨 맛집", R.mipmap.spaghetti));
+        myDataset.add(new MyData("국밥 맛집", R.mipmap.spaghetti));
+
+
+        findButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                task = new BackGroundTask();
+                task.execute(100);
+                Toast.makeText(getApplicationContext(), placeData[0], Toast.LENGTH_SHORT).show();
+
+                mLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
+                mRecyclerView.setLayoutManager(mLayoutManager);
+                myDataset = new ArrayList<>();
+                final MyAdapter mAdapter = new MyAdapter(myDataset);
+                mAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View v, int position) {
+                        Toast.makeText(getApplicationContext(), mAdapter.getText(position), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                mRecyclerView.setAdapter(mAdapter);
+                
+                for(int i = 0; i < 5; i++) {
+                    myDataset.add(new MyData(placeData[i], R.mipmap.spaghetti));
+                }
+            }
+        });
 
     }
 
@@ -276,6 +305,24 @@ public class MainActivity extends AppCompatActivity {
 
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
                 || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    class BackGroundTask extends AsyncTask<Integer, Integer, Integer> {
+
+        protected Integer doInBackground(Integer... values) {
+            try{
+                getKakaoAPIData getKakaoAPIData = new getKakaoAPIData(address);
+                placeData = getKakaoAPIData.getAPIData();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return 1;
+        }
+
+        protected void onPostExecute(Integer result) {
+        }
     }
 
 }

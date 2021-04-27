@@ -22,7 +22,7 @@ public class getKakaoAPIData {
     public String[] getAPIData() {
 
         try {
-            location = URLEncoder.encode(location,"UTF-8");
+            location = URLEncoder.encode(location+" 맛집","UTF-8");
             String apiURL = "https://dapi.kakao.com/v2/local/search/keyword.json?query="+location+"&page=1&size="+display;
             URL url = new URL(apiURL);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
