@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -26,6 +28,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import static java.lang.Thread.sleep;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -94,7 +98,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 task = new BackGroundTask();
                 task.execute(100);
-                Toast.makeText(getApplicationContext(), placeData[0], Toast.LENGTH_SHORT).show();
+                try {
+                    sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
                 mLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
                 mRecyclerView.setLayoutManager(mLayoutManager);
@@ -107,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
                 mRecyclerView.setAdapter(mAdapter);
-                
+
                 for(int i = 0; i < 5; i++) {
                     myDataset.add(new MyData(placeData[i], R.mipmap.spaghetti));
                 }
@@ -309,6 +317,17 @@ public class MainActivity extends AppCompatActivity {
 
     class BackGroundTask extends AsyncTask<Integer, Integer, Integer> {
 
+        ProgressDialog asyncDialog;
+
+        @Override
+        protected void onPreExecute() {
+            asyncDialog = new ProgressDialog(MainActivity.this);
+            asyncDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            asyncDialog.setMessage("주변 맛집 찾는 중..");
+            asyncDialog.show();
+            super.onPreExecute();
+        }
+
         protected Integer doInBackground(Integer... values) {
             try{
                 getKakaoAPIData getKakaoAPIData = new getKakaoAPIData(address);
@@ -322,6 +341,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Integer result) {
+            asyncDialog.dismiss();
+            super.onPostExecute(result);
         }
     }
 
