@@ -16,7 +16,7 @@ public class getKakaoAPIData {
 
     public getKakaoAPIData(String location) {
         this.location = location;
-        dataString = new String[display];
+        dataString = new String[display*2];
     }
 
     public String[] getAPIData() {
@@ -49,7 +49,6 @@ public class getKakaoAPIData {
 
             br.close();
             con.disconnect();
-            System.out.println(sb);
 
             String data = sb.toString();
             String[] array;
@@ -69,11 +68,15 @@ public class getKakaoAPIData {
                 }
             }
 
-            for(int i = 0; i < display; i++) {
-                dataString[i] = title[i];
-                dataString[i+5] = link[i];
+            for(int i  = 0; i < display; i++) {
+                System.out.println(title[i]);
+                System.out.println(link[i]);
             }
 
+            for(int i = 0; i < display; i++) {
+                dataString[i] = title[i];
+                dataString[i+display] = link[i];
+            }
 
         }catch (Exception e) {
             System.out.println(e);

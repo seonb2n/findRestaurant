@@ -81,6 +81,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         return mDataset.get(position).text;
     }
 
+    public String getLink(int position) {return mDataset.get(position).link;}
+
     public interface OnItemClickListener{
         void onItemClick(View v, int position);
     }
@@ -93,9 +95,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
 class MyData{
     public String text;
+    public String link;
     public int img;
-    public MyData(String text, int img){
+    public MyData(String text, int img, String link){
         this.text = text;
         this.img = img;
+        this.link = link;
     }
 }

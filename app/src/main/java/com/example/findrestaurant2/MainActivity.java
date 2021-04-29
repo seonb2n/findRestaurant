@@ -45,7 +45,10 @@ public class MainActivity extends AppCompatActivity {
     String[] REQUIRED_PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
     String address;
 
-    String[] placeData = new String[10];
+
+    private final int searchNumber = 10;
+    String[] placeData = new String[searchNumber];
+    String[] linkData = new String[searchNumber];
     BackGroundTask task;
 
     @Override
@@ -82,15 +85,15 @@ public class MainActivity extends AppCompatActivity {
         mAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
-                Toast.makeText(getApplicationContext(), mAdapter.getText(position), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), mAdapter.getLink(position), Toast.LENGTH_SHORT).show();
             }
         });
         mRecyclerView.setAdapter(mAdapter);
 
         //데이타 추가
-        myDataset.add(new MyData("스파게티 맛집", R.mipmap.spaghetti));
-        myDataset.add(new MyData("치킨 맛집", R.mipmap.spaghetti));
-        myDataset.add(new MyData("국밥 맛집", R.mipmap.spaghetti));
+        myDataset.add(new MyData("스파게티 맛집", R.mipmap.spaghetti, "예시입니다."));
+        myDataset.add(new MyData("치킨 맛집", R.mipmap.chicken, "예시입니다."));
+        myDataset.add(new MyData("국밥 맛집", R.mipmap.beefsoup, "예시입니다."));
 
 
         findButton.setOnClickListener(new View.OnClickListener() {
@@ -98,27 +101,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 task = new BackGroundTask();
                 task.execute(100);
-                try {
-                    sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
 
-                mLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
-                mRecyclerView.setLayoutManager(mLayoutManager);
-                myDataset = new ArrayList<>();
-                final MyAdapter mAdapter = new MyAdapter(myDataset);
-                mAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View v, int position) {
-                        Toast.makeText(getApplicationContext(), mAdapter.getText(position), Toast.LENGTH_SHORT).show();
-                    }
-                });
-                mRecyclerView.setAdapter(mAdapter);
 
-                for(int i = 0; i < 5; i++) {
-                    myDataset.add(new MyData(placeData[i], R.mipmap.spaghetti));
-                }
             }
         });
 
@@ -332,6 +316,9 @@ public class MainActivity extends AppCompatActivity {
             try{
                 getKakaoAPIData getKakaoAPIData = new getKakaoAPIData(address);
                 placeData = getKakaoAPIData.getAPIData();
+                for(int i = 0; i<5; i++) {
+                    linkData[i] = placeData[i+searchNumber];
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -343,6 +330,23 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Integer result) {
             asyncDialog.dismiss();
             super.onPostExecute(result);
+
+            mLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
+            mRecyclerView.setLayoutManager(mLayoutManager);
+            myDataset = new ArrayList<>();
+            final MyAdapter mAdapter = new MyAdapter(myDataset);
+            mAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(View v, int position) {
+                    Toast.makeText(getApplicationContext(), mAdapter.getLink(position), Toast.LENGTH_SHORT).show();
+                }
+            });
+            mRecyclerView.setAdapter(mAdapter);
+
+            for(int i = 0; i < 5; i++) {
+                myDataset.add(new MyData(placeData[i], R.mipmap.spaghetti, linkData[i]));
+            }
+
         }
     }
 
