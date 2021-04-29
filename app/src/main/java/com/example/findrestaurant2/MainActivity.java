@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
         address = getCurrentAddress(latitude, longitude);
         address = addressChanger(address);
         //Test 용으로 address 값 임시로 고정
-        address = "영등포구";
         Toast.makeText(getApplicationContext(), address, Toast.LENGTH_SHORT).show();
 
 
@@ -338,7 +337,9 @@ public class MainActivity extends AppCompatActivity {
             mAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View v, int position) {
-                    Toast.makeText(getApplicationContext(), mAdapter.getLink(position), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity.this, webActivity.class);
+                    intent.putExtra("URL", mAdapter.getLink(position));
+                    startActivity(intent);
                 }
             });
             mRecyclerView.setAdapter(mAdapter);
