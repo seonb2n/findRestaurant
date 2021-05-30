@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         double longitude = gpsTracker.getLongitude();
         address = getCurrentAddress(latitude, longitude);
         address = addressChanger(address);
-        //Test 용으로 address 값 임시로 고정
+
         Toast.makeText(getApplicationContext(), address, Toast.LENGTH_SHORT).show();
 
 
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         });
         mRecyclerView.setAdapter(mAdapter);
 
-        //데이타 추가
+        //예시 데이타 추가
         myDataset.add(new MyData("스파게티 맛집", R.mipmap.spaghetti, "예시입니다."));
         myDataset.add(new MyData("치킨 맛집", R.mipmap.chicken, "예시입니다."));
         myDataset.add(new MyData("국밥 맛집", R.mipmap.beefsoup, "예시입니다."));
