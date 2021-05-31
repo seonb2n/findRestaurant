@@ -40,7 +40,17 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             cv = (CardView)view.findViewById(R.id.card_view);
             mButton = (Button)view.findViewById(R.id.webViewButton);
 
-
+            mButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION) {
+                        if(mListener != null) {
+                            mListener.onItemClick(v, pos);
+                        }
+                    }
+                }
+            });
         }
 
     }
@@ -83,6 +93,19 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         holder.mWebView.setHorizontalScrollBarEnabled(false);
         holder.mWebView.loadUrl(url);
     }
+
+    //클릭 이벤트 구현
+    public interface OnItemClickListener {
+        void onItemClick(View v, int position);
+    }
+
+    private OnItemClickListener mListener = null;
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.mListener = listener;
+    }
+
+
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override

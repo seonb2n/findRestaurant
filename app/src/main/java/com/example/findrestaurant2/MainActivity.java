@@ -83,16 +83,21 @@ public class MainActivity extends AppCompatActivity {
         final MyAdapter mAdapter = new MyAdapter(myDataset);
         mRecyclerView.setAdapter(mAdapter);
 
+        mAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                Toast.makeText(getApplicationContext(), "Click the Button!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         //예시 데이타 추가
         myDataset.add(new MyData("", R.mipmap.spaghetti, "https://place.map.kakao.com/1492599844?service=search_pc"));
-
 
         findButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 task = new BackGroundTask();
                 task.execute(100);
-
 
             }
         });
@@ -327,6 +332,15 @@ public class MainActivity extends AppCompatActivity {
             myDataset = new ArrayList<>();
             final MyAdapter mAdapter = new MyAdapter(myDataset);
             mRecyclerView.setAdapter(mAdapter);
+
+            mAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(View v, int position) {
+                    Intent intent = new Intent(getApplicationContext(), webActivity.class);
+                    intent.putExtra("URL", linkData[position]);
+                    startActivity(intent);
+                }
+            });
 
             for(int i = 0; i < 5; i++) {
                 myDataset.add(new MyData(placeData[i], R.mipmap.spaghetti, linkData[i]));
