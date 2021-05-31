@@ -13,36 +13,32 @@
         app:cardCornerRadius="15dp"
         android:elevation="40dp"
         app:cardUseCompatPadding="true"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginTop="30dp"
         app:cardBackgroundColor="#FFBB00"
         >
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             >
 
-            <ImageView
-                android:id="@+id/card_view_image_view"
+            <WebView
+                android:id="@+id/card_view_webView"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="8"
-                android:scaleType="fitCenter"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
                 />
 
-            <TextView
-                android:id="@+id/card_view_text_view"
+            <Button
+                android:id="@+id/webViewButton"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2"
-                android:textColor="#000000"
-                android:gravity="center"
+                android:layout_height="match_parent"
+                android:background="#00000000"
                 />
 
-        </LinearLayout>
+        </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
 
