@@ -81,18 +81,10 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
         myDataset = new ArrayList<>();
         final MyAdapter mAdapter = new MyAdapter(myDataset);
-        mAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View v, int position) {
-                Toast.makeText(getApplicationContext(), mAdapter.getLink(position), Toast.LENGTH_SHORT).show();
-            }
-        });
         mRecyclerView.setAdapter(mAdapter);
 
         //예시 데이타 추가
-        myDataset.add(new MyData("스파게티 맛집", R.mipmap.spaghetti, "예시입니다."));
-        myDataset.add(new MyData("치킨 맛집", R.mipmap.chicken, "예시입니다."));
-        myDataset.add(new MyData("국밥 맛집", R.mipmap.beefsoup, "예시입니다."));
+        myDataset.add(new MyData("", R.mipmap.spaghetti, "https://place.map.kakao.com/1492599844?service=search_pc"));
 
 
         findButton.setOnClickListener(new View.OnClickListener() {
@@ -334,14 +326,6 @@ public class MainActivity extends AppCompatActivity {
             mRecyclerView.setLayoutManager(mLayoutManager);
             myDataset = new ArrayList<>();
             final MyAdapter mAdapter = new MyAdapter(myDataset);
-            mAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(View v, int position) {
-                    Intent intent = new Intent(MainActivity.this, webActivity.class);
-                    intent.putExtra("URL", mAdapter.getLink(position));
-                    startActivity(intent);
-                }
-            });
             mRecyclerView.setAdapter(mAdapter);
 
             for(int i = 0; i < 5; i++) {

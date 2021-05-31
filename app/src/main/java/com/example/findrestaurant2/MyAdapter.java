@@ -1,10 +1,19 @@
 package com.example.findrestaurant2;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -14,36 +23,28 @@ import java.util.ArrayList;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     private ArrayList<MyData> mDataset;
-
-    private OnItemClickListener mListener;
+    private WebSettings mWebSettings;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     public class ViewHolder extends RecyclerView.ViewHolder{
         // each data item is just a string in this case
-        public ImageView mImageView;
-        public TextView mTextView;
+        public WebView mWebView;
         public CardView cv;
+        public Button mButton;
 
         public ViewHolder(final View view){
             super(view);
-            mImageView = (ImageView)view.findViewById(R.id.card_view_image_view);
-            mTextView = (TextView)view.findViewById(R.id.card_view_text_view);
+            mWebView = (WebView)view.findViewById(R.id.card_view_webView);
             cv = (CardView)view.findViewById(R.id.card_view);
+            mButton = (Button)view.findViewById(R.id.webViewButton);
 
-            cv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mListener != null) {
-                        mListener.onItemClick(view, getAdapterPosition());
-                    }
-                }
-            });
 
         }
 
     }
+
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public MyAdapter(ArrayList<MyData> myDataset) {
@@ -67,8 +68,20 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.mTextView.setText(mDataset.get(position).text);
-        holder.mImageView.setImageResource(mDataset.get(position).img);
+        String url = mDataset.get(position).link;
+        holder.mWebView.setWebViewClient(new WebViewClient());
+        mWebSettings = holder.mWebView.getSettings();
+        mWebSettings.setJavaScriptEnabled(true);
+        mWebSettings.setSupportMultipleWindows(false);
+        mWebSettings.setJavaScriptCanOpenWindowsAutomatically(false);
+        mWebSettings.setLoadWithOverviewMode(true);
+        mWebSettings.setUseWideViewPort(true);
+        mWebSettings.setSupportZoom(false);
+        mWebSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+
+        holder.mWebView.setVerticalScrollBarEnabled(false);
+        holder.mWebView.setHorizontalScrollBarEnabled(false);
+        holder.mWebView.loadUrl(url);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -82,13 +95,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     }
 
     public String getLink(int position) {return mDataset.get(position).link;}
-
-    public interface OnItemClickListener{
-        void onItemClick(View v, int position);
-    }
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.mListener = listener;
-    }
 
 
 }
