@@ -45,7 +45,10 @@ public class MainActivity extends AppCompatActivity {
     String[] REQUIRED_PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
     String address;
 
-    String[] placeData = new String[10];
+
+    private final int searchNumber = 10;
+    String[] placeData = new String[searchNumber];
+    String[] linkData = new String[searchNumber];
     BackGroundTask task;
 
     @Override
@@ -68,8 +71,7 @@ public class MainActivity extends AppCompatActivity {
         double longitude = gpsTracker.getLongitude();
         address = getCurrentAddress(latitude, longitude);
         address = addressChanger(address);
-        //Test 용으로 address 값 임시로 고정
-        address = "영등포구";
+
         Toast.makeText(getApplicationContext(), address, Toast.LENGTH_SHORT).show();
 
 
@@ -79,46 +81,24 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
         myDataset = new ArrayList<>();
         final MyAdapter mAdapter = new MyAdapter(myDataset);
+        mRecyclerView.setAdapter(mAdapter);
+
         mAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
-                Toast.makeText(getApplicationContext(), mAdapter.getText(position), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Click the Button!", Toast.LENGTH_SHORT).show();
             }
         });
-        mRecyclerView.setAdapter(mAdapter);
 
-        //데이타 추가
-        myDataset.add(new MyData("스파게티 맛집", R.mipmap.spaghetti));
-        myDataset.add(new MyData("치킨 맛집", R.mipmap.spaghetti));
-        myDataset.add(new MyData("국밥 맛집", R.mipmap.spaghetti));
-
+        //예시 데이타 추가
+        myDataset.add(new MyData("", R.mipmap.spaghetti, "https://place.map.kakao.com/1492599844?service=search_pc"));
 
         findButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 task = new BackGroundTask();
                 task.execute(100);
-                try {
-                    sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
 
-                mLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
-                mRecyclerView.setLayoutManager(mLayoutManager);
-                myDataset = new ArrayList<>();
-                final MyAdapter mAdapter = new MyAdapter(myDataset);
-                mAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View v, int position) {
-                        Toast.makeText(getApplicationContext(), mAdapter.getText(position), Toast.LENGTH_SHORT).show();
-                    }
-                });
-                mRecyclerView.setAdapter(mAdapter);
-
-                for(int i = 0; i < 5; i++) {
-                    myDataset.add(new MyData(placeData[i], R.mipmap.spaghetti));
-                }
             }
         });
 
@@ -332,6 +312,9 @@ public class MainActivity extends AppCompatActivity {
             try{
                 getKakaoAPIData getKakaoAPIData = new getKakaoAPIData(address);
                 placeData = getKakaoAPIData.getAPIData();
+                for(int i = 0; i<5; i++) {
+                    linkData[i] = placeData[i+searchNumber];
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -343,6 +326,26 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Integer result) {
             asyncDialog.dismiss();
             super.onPostExecute(result);
+
+            mLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
+            mRecyclerView.setLayoutManager(mLayoutManager);
+            myDataset = new ArrayList<>();
+            final MyAdapter mAdapter = new MyAdapter(myDataset);
+            mRecyclerView.setAdapter(mAdapter);
+
+            mAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(View v, int position) {
+                    Intent intent = new Intent(getApplicationContext(), webActivity.class);
+                    intent.putExtra("URL", linkData[position]);
+                    startActivity(intent);
+                }
+            });
+
+            for(int i = 0; i < 5; i++) {
+                myDataset.add(new MyData(placeData[i], R.mipmap.spaghetti, linkData[i]));
+            }
+
         }
     }
 
